@@ -6,11 +6,7 @@ import {
   Plus,
   Maximize2,
   Minimize2,
-  RotateCcw,
-  Sparkles,
   Info,
-  Layers,
-  FileText,
 } from 'lucide-react';
 
 export default function AnswerSheetViewer({
@@ -62,12 +58,9 @@ export default function AnswerSheetViewer({
           <span className="text-base font-bold text-white tracking-tight">
             Answer Sheet
           </span>
-          <span className="text-xs text-[#A9A9A9] hidden sm:inline">
-            (Handwritten Student Script)
-          </span>
         </div>
 
-        {/* Right: Zoom Controls & Scroll Indicator */}
+        {/* Right: Zoom Controls & Fullscreen */}
         <div className="flex items-center gap-2 md:gap-4">
           {/* Zoom Control Group */}
           <div className="flex items-center gap-1 bg-[#171717] px-2.5 py-1 rounded-xl border border-white/10 text-xs font-semibold">
@@ -94,12 +87,6 @@ export default function AnswerSheetViewer({
             >
               <Plus className="w-3.5 h-3.5" />
             </button>
-          </div>
-
-          {/* Continuous Pages Badge */}
-          <div className="hidden sm:flex items-center gap-1.5 bg-[#171717] px-3 py-1 rounded-xl border border-white/10 text-xs font-semibold text-[#E0E0E0]">
-            <FileText className="w-3.5 h-3.5 text-[#FF5623]" />
-            <span>{displayPages.length} {displayPages.length === 1 ? 'Page' : 'Pages'} (Scrollable)</span>
           </div>
 
           {/* Fullscreen Toggle */}

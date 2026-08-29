@@ -27,6 +27,9 @@ class Settings(BaseSettings):
     PDF_DPI: int = 150
     DEFAULT_MAX_MARKS: float = 2.0
 
+    # Gemini AI Vision Key (loaded from .env or environment variable)
+    GEMINI_API_KEY: str = ""
+
     model_config = {
         "env_file": ".env",
         "extra": "ignore"

@@ -17,6 +17,7 @@ from app.services.ocr_service import OCRService
 from app.services.question_extractor import QuestionExtractor
 from app.services.answer_extractor import AnswerExtractor
 from app.services.mapping_service import MappingService
+from app.services.ai_service import AIService
 
 logger = logging.getLogger("veda_ai.processing_service")
 
@@ -140,6 +141,45 @@ class ProcessingService:
                 as_path, as_pages_dir, dpi=settings.PDF_DPI, api_page_prefix=as_page_prefix
             )
 
+            # Option A: Gemini Multimodal Vision API (if API key is configured)
+            if settings.GEMINI_API_KEY:
+                try:
+                    cls.set_status(assessment_id, "processing", "question_extraction", 35)
+                    qp_image_paths = sorted(
+                        list(qp_pages_dir.glob("page_*.png")),
+                        key=lambda p: int(p.stem.split("_")[-1])
+                    )
+                    as_image_paths = sorted(
+                        list(as_pages_dir.glob("page_*.png")),
+                        key=lambda p: int(p.stem.split("_")[-1])
+                    )
+
+                    cls.set_status(assessment_id, "processing", "answer_extraction", 65)
+                    ai_assessment = AIService.extract_with_gemini_vision(
+                        assessment_id=assessment_id,
+                        qp_image_paths=qp_image_paths,
+                        as_image_paths=as_image_paths,
+                        pages_info=as_pages_info,
+                        api_key=settings.GEMINI_API_KEY,
+                        exam_name=qp_path.name,
+                        answer_sheet_name=as_path.name,
+                    )
+
+                    if ai_assessment and ai_assessment.questions:
+                        cls.set_status(assessment_id, "processing", "mapping", 90)
+                        result_file = assessment_dir / "result.json"
+                        with open(result_file, "w", encoding="utf-8") as f:
+                            json.dump(ai_assessment.model_dump(), f, indent=2)
+
+                        _RESULT_STORE[assessment_id] = ai_assessment
+                        cls.set_status(assessment_id, "completed", "completed", 100)
+                        logger.info(f"Gemini Vision successfully processed and saved assessment {assessment_id}")
+                        return ai_assessment
+
+                except Exception as e:
+                    logger.warning(f"Gemini Vision pipeline failed, falling back to local OCR pipeline: {e}")
+
+            # Option B: Local OCR & Deterministic Pipeline
             # Stage 2: Question Extraction (40%)
             cls.set_status(assessment_id, "processing", "question_extraction", 40)
             
