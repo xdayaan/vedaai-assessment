@@ -17,9 +17,9 @@ from app.models.schemas import (
 logger = logging.getLogger("veda_ai.ai_service")
 
 GEMINI_MODELS = [
-    "gemini-2.0-flash",
-    "gemini-1.5-flash",
-    "gemini-1.5-pro",
+    "gemini-3.6-flash",
+    "gemini-3.7-flash",
+    "gemini-3.5-flash",
 ]
 
 
