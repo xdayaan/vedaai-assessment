@@ -2,7 +2,7 @@
  * Client utility for interacting with the FastAPI Assessment Backend.
  */
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+const API_BASE = (process.env.NEXT_PUBLIC_API_URL || 'https://vedaai-assessment-f7ds.onrender.com/api').replace(/\/$/, '');
 
 export async function uploadAssessmentFiles(questionPaperFile, answerSheetFile) {
   const formData = new FormData();

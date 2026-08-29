@@ -21,11 +21,11 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
-# Enable CORS for Next.js frontend
+# Enable CORS for Next.js frontend (allow all origins with headers & methods)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -45,6 +45,7 @@ async def root():
 
 
 @app.get("/health", tags=["Health"])
+@app.get(f"{settings.API_PREFIX}/health", tags=["Health"])
 async def health():
     return {"status": "ok"}
 
